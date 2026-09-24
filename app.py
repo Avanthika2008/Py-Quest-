@@ -51,8 +51,8 @@ def calculate_score():
     for i, question in enumerate(questions):
         selected = st.session_state.get(f"answer_{i}")
 
-        if selected == question["answer"]:
-            score += 1
+      if selected != "-- Select an answer --" and selected == question["answer"]:
+    score += 1
 
     return score
 
@@ -112,11 +112,11 @@ elif not st.session_state.submitted:
 
         for i, question in enumerate(questions):
 
-            st.radio(
-                question["question"],
-                question["options"],
-                key=f"answer_{i}"
-            )
+           st.radio(
+    question["question"],
+    ["-- Select an answer --"] + question["options"],
+    key=f"answer_{i}"
+)
 
             st.write("")
 
