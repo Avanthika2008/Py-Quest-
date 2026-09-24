@@ -43,17 +43,20 @@ questions = [
         "answer": "try-except"
     }
 ]
+
+
 def calculate_score():
     score = 0
 
     for i, question in enumerate(questions):
         selected = st.session_state.get(f"answer_{i}")
 
-        if selected != "-- Select an answer --" and selected == question["answer"]:
+        if selected == question["answer"]:
             score += 1
 
     return score
-# Create session variables only once
+
+
 if "started" not in st.session_state:
     st.session_state.started = False
 
@@ -67,16 +70,12 @@ if "score" not in st.session_state:
     st.session_state.score = 0
 
 
-# ---------------- START SCREEN ----------------
-
 if not st.session_state.started:
 
     st.title("🐍 PyQuest")
     st.subheader("Python Quiz Challenge")
 
-    st.write(
-        "Test your Python knowledge with this interactive quiz!"
-    )
+    st.write("Test your Python knowledge with this interactive quiz!")
 
     name = st.text_input("Enter your name:")
 
@@ -93,11 +92,10 @@ if not st.session_state.started:
             st.rerun()
 
 
-# ---------------- QUIZ SCREEN ----------------
-
 elif not st.session_state.submitted:
 
     st.title("🐍 PyQuest")
+
     st.subheader(
         f"Good luck, {st.session_state.name}! 🎯"
     )
@@ -108,17 +106,15 @@ elif not st.session_state.submitted:
 
         for i, question in enumerate(questions):
 
-           st.radio(
-    question["question"],
-    ["-- Select an answer --"] + question["options"],
-    key=f"answer_{i}"
-)
+            st.radio(
+                question["question"],
+                ["-- Select an answer --"] + question["options"],
+                key=f"answer_{i}"
+            )
 
             st.write("")
 
-        submitted = st.form_submit_button(
-            "✅ Submit Quiz"
-        )
+        submitted = st.form_submit_button("✅ Submit Quiz")
 
     if submitted:
 
@@ -127,8 +123,6 @@ elif not st.session_state.submitted:
 
         st.rerun()
 
-
-# ---------------- RESULT SCREEN ----------------
 
 else:
 
@@ -182,19 +176,15 @@ else:
         st.rerun()
 
 
-# ---------------- TOPICS ----------------
-
 with st.expander("📚 Python Topics Used"):
 
     st.write("""
-    • Variables and data types  
-    • Input and output  
-    • Conditional statements  
-    • Lists  
-    • Dictionaries  
-    • Functions  
-    • Loops  
+    • Variables and data types
+    • Input and output
+    • Conditional statements
+    • Lists
+    • Dictionaries
+    • Functions
+    • Loops
     • Exception handling
     """)
-
-  
