@@ -9,7 +9,7 @@ st.set_page_config(
 questions = [
     {
         "question": "Which of the following is a Python data type?",
-        "options": ["Integer", "HTML", "CSS", "Browser"],
+        "options": ["HTML", "CSS", "Integer", "Browser"],
         "answer": "Integer"
     },
     {
@@ -19,27 +19,27 @@ questions = [
     },
     {
         "question": "Which data structure stores multiple values in an ordered way?",
-        "options": ["List", "Set", "Function", "Module"],
+        "options": ["Set", "Function", "Module", "List"],
         "answer": "List"
     },
     {
         "question": "Which symbol is used to create a dictionary?",
-        "options": ["{}", "[]", "()", "<>"],
+        "options": ["[]", "{}", "()", "<>"],
         "answer": "{}"
     },
     {
         "question": "Which keyword is used to define a function?",
-        "options": ["def", "function", "fun", "define"],
+        "options": ["function", "fun", "def", "define"],
         "answer": "def"
     },
     {
         "question": "Which loop is commonly used to repeat through a list?",
-        "options": ["for", "if", "try", "def"],
+        "options": ["if", "for", "try", "def"],
         "answer": "for"
     },
     {
         "question": "Which block is used to handle errors in Python?",
-        "options": ["try-except", "if-else", "for-loop", "def"],
+        "options": ["if-else", "for-loop", "def", "try-except"],
         "answer": "try-except"
     }
 ]
@@ -70,12 +70,16 @@ if "score" not in st.session_state:
     st.session_state.score = 0
 
 
+# ---------------- START SCREEN ----------------
+
 if not st.session_state.started:
 
     st.title("🐍 PyQuest")
     st.subheader("Python Quiz Challenge")
 
-    st.write("Test your Python knowledge with this interactive quiz!")
+    st.write(
+        "Test your Python knowledge with this interactive quiz!"
+    )
 
     name = st.text_input("Enter your name:")
 
@@ -91,6 +95,8 @@ if not st.session_state.started:
 
             st.rerun()
 
+
+# ---------------- QUIZ SCREEN ----------------
 
 elif not st.session_state.submitted:
 
@@ -114,7 +120,9 @@ elif not st.session_state.submitted:
 
             st.write("")
 
-        submitted = st.form_submit_button("✅ Submit Quiz")
+        submitted = st.form_submit_button(
+            "✅ Submit Quiz"
+        )
 
     if submitted:
 
@@ -123,6 +131,8 @@ elif not st.session_state.submitted:
 
         st.rerun()
 
+
+# ---------------- RESULT SCREEN ----------------
 
 else:
 
@@ -175,6 +185,8 @@ else:
 
         st.rerun()
 
+
+# ---------------- TOPICS ----------------
 
 with st.expander("📚 Python Topics Used"):
 
