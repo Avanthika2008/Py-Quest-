@@ -1,167 +1,204 @@
 import streamlit as st
 
-# Page settings
 st.set_page_config(
     page_title="PyQuest - Python Quiz",
     page_icon="🐍",
     layout="centered"
 )
 
-# Quiz questions stored in a list of dictionaries
 questions = [
     {
         "question": "Which of the following is a Python data type?",
-        "options": ["Integer", "Number", "Character", "Decimal"],
+        "options": ["Integer", "HTML", "CSS", "Browser"],
         "answer": "Integer"
     },
     {
         "question": "Which statement is used to make a decision in Python?",
-        "options": ["if", "repeat", "check", "choose"],
+        "options": ["if", "for", "print", "input"],
         "answer": "if"
     },
     {
         "question": "Which data structure stores multiple values in an ordered way?",
-        "options": ["List", "Function", "Class", "Module"],
+        "options": ["List", "Set", "Function", "Module"],
         "answer": "List"
     },
     {
         "question": "Which symbol is used to create a dictionary?",
-        "options": ["[]", "()", "{}", "<>"],
+        "options": ["{}", "[]", "()", "<>"],
         "answer": "{}"
     },
     {
         "question": "Which keyword is used to define a function?",
-        "options": ["function", "def", "fun", "define"],
+        "options": ["def", "function", "fun", "define"],
         "answer": "def"
     },
     {
         "question": "Which loop is commonly used to repeat through a list?",
-        "options": ["for", "if", "switch", "select"],
+        "options": ["for", "if", "try", "def"],
         "answer": "for"
     },
     {
         "question": "Which block is used to handle errors in Python?",
-        "options": ["try-except", "if-else", "for-while", "check-error"],
+        "options": ["try-except", "if-else", "for-loop", "def"],
         "answer": "try-except"
     }
 ]
 
-# Function to calculate the score
-def calculate_score(answers):
+
+def calculate_score():
     score = 0
 
-    for index, answer in enumerate(answers):
-        if answer == questions[index]["answer"]:
+    for i, question in enumerate(questions):
+        selected = st.session_state.get(f"answer_{i}")
+
+        if selected == question["answer"]:
             score += 1
 
     return score
 
 
-# Website title
-st.title("🐍 PyQuest")
-st.subheader("Python Quiz Challenge")
-
-st.write(
-    "Test your Python knowledge with this interactive quiz!"
-)
-
-# Store quiz state
+# Create session variables only once
 if "started" not in st.session_state:
     st.session_state.started = False
 
 if "submitted" not in st.session_state:
     st.session_state.submitted = False
 
+if "name" not in st.session_state:
+    st.session_state.name = ""
 
-# Start screen
+if "score" not in st.session_state:
+    st.session_state.score = 0
+
+
+# ---------------- START SCREEN ----------------
+
 if not st.session_state.started:
 
-    name = st.text_input("👤 Enter your name")
+    st.title("🐍 PyQuest")
+    st.subheader("Python Quiz Challenge")
+
+    st.write(
+        "Test your Python knowledge with this interactive quiz!"
+    )
+
+    name = st.text_input("Enter your name:")
 
     if st.button("🚀 Start Quiz"):
 
         if name.strip() == "":
-            st.warning("Please enter your name before starting the quiz.")
+            st.warning("Please enter your name first.")
+
         else:
-            st.session_state.name = name
+            st.session_state.name = name.strip()
             st.session_state.started = True
+            st.session_state.submitted = False
+
             st.rerun()
 
 
-# Quiz screen
-else:
+# ---------------- QUIZ SCREEN ----------------
 
-    st.success(f"Welcome, {st.session_state.name}! 🎉")
+elif not st.session_state.submitted:
 
-    answers = []
+    st.title("🐍 PyQuest")
+    st.subheader(
+        f"Good luck, {st.session_state.name}! 🎯"
+    )
 
-    for number, question in enumerate(questions, start=1):
+    st.write("Choose one answer for each question.")
 
-        st.write(f"### Question {number}")
-        st.write(question["question"])
+    with st.form("quiz_form"):
 
-        selected = st.radio(
-            "Choose your answer:",
-            question["options"],
-            key=f"question_{number}"
+        for i, question in enumerate(questions):
+
+            st.radio(
+                question["question"],
+                question["options"],
+                key=f"answer_{i}"
+            )
+
+            st.write("")
+
+        submitted = st.form_submit_button(
+            "✅ Submit Quiz"
         )
 
-        answers.append(selected)
+    if submitted:
 
-    st.write("---")
+        st.session_state.score = calculate_score()
+        st.session_state.submitted = True
 
-    if st.button("🏆 Submit Quiz"):
-
-        try:
-            score = calculate_score(answers)
-
-            st.session_state.score = score
-            st.session_state.submitted = True
-
-        except Exception:
-            st.error("Something went wrong. Please try again.")
+        st.rerun()
 
 
-# Result screen
-if st.session_state.get("submitted", False):
+# ---------------- RESULT SCREEN ----------------
+
+else:
+
+    st.title("🎉 Quiz Completed!")
 
     score = st.session_state.score
     total = len(questions)
 
-    st.write("---")
-    st.header("🎉 Quiz Completed!")
-
     st.write(
-        f"**{st.session_state.name}**, your score is:"
+        f"Well done, {st.session_state.name}!"
     )
 
-    st.metric("Your Score", f"{score} / {total}")
+    st.subheader(
+        f"Your Score: {score}/{total}"
+    )
 
     if score == total:
-        st.success("🌟 Perfect score! Excellent Python knowledge!")
+
+        st.success(
+            "Excellent! You answered everything correctly! 🏆"
+        )
 
     elif score >= 5:
-        st.success("👏 Great job! You have a strong understanding of Python.")
+
+        st.success(
+            "Great job! You have a good knowledge of Python! 👏"
+        )
 
     elif score >= 3:
-        st.info("👍 Good attempt! Keep practising Python.")
+
+        st.info(
+            "Good attempt! Keep practising Python. 📚"
+        )
 
     else:
-        st.warning("📚 Keep learning and try the quiz again!")
+
+        st.warning(
+            "Keep learning and try again! 💪"
+        )
 
     if st.button("🔄 Restart Quiz"):
-        st.session_state.clear()
+
+        st.session_state.started = False
+        st.session_state.submitted = False
+        st.session_state.name = ""
+        st.session_state.score = 0
+
+        for i in range(len(questions)):
+            st.session_state.pop(f"answer_{i}", None)
+
         st.rerun()
 
 
-# Topics used in the project
+# ---------------- TOPICS ----------------
+
 with st.expander("📚 Python Topics Used"):
+
     st.write("""
-    1. Variables and Data Types
-    2. Lists
-    3. Dictionaries
-    4. If-Else Conditions
-    5. For Loops
-    6. Functions
-    7. Exception Handling
+    • Variables and data types  
+    • Input and output  
+    • Conditional statements  
+    • Lists  
+    • Dictionaries  
+    • Functions  
+    • Loops  
+    • Exception handling
     """)
+
+  
