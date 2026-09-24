@@ -43,20 +43,16 @@ questions = [
         "answer": "try-except"
     }
 ]
-
-
 def calculate_score():
     score = 0
 
     for i, question in enumerate(questions):
         selected = st.session_state.get(f"answer_{i}")
 
-      if selected != "-- Select an answer --" and selected == question["answer"]:
-    score += 1
+        if selected != "-- Select an answer --" and selected == question["answer"]:
+            score += 1
 
     return score
-
-
 # Create session variables only once
 if "started" not in st.session_state:
     st.session_state.started = False
